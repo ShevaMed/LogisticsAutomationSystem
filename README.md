@@ -1,5 +1,5 @@
 # Logistics Automation System
-A Logistics Automation System is software designed to simplify and increase the efficiency of logistics processes. The system is intended for operators working in logistics departments or logistics companies.
+Logistics Automation System is software designed to simplify and increase the efficiency of logistics processes. The system is intended for operators working in logistics departments or logistics companies.
 
 ## Installation
 To set up the project, follow these steps:
