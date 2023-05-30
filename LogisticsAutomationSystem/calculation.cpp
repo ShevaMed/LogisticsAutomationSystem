@@ -11,13 +11,13 @@ Calculation::Calculation()
 
 double Calculation::calculateTheDistanceOnTheEarth(double latitudeA, double longitudeA, double latitudeB, double longitudeB)
 {
-    // перевести координаты в радианы
+    // convert coordinates to radians
     double latA = latitudeA * M_PI / 180;
     double latB = latitudeB * M_PI / 180;
     double longA = longitudeA * M_PI / 180;
     double longB = longitudeB * M_PI / 180;
 
-    // косинусы и синусы широт и разницы долгот
+    // cosines and sines of latitudes and longitude differences
     double cos_latA = cos(latA);
     double cos_latB = cos(latB);
     double sin_latA = sin(latA);
@@ -26,7 +26,7 @@ double Calculation::calculateTheDistanceOnTheEarth(double latitudeA, double long
     double cos_delta = cos(delta);
     double sin_delta = sin(delta);
 
-    // вычисления длины большого круга
+    // calculate the length of the great circle
     double x = sin_latA * sin_latB + cos_latA * cos_latB * cos_delta;
     double y = sqrt((cos_latB * sin_delta) * (cos_latB * sin_delta) +
                     (cos_latA * sin_latB - sin_latA * cos_latB * cos_delta) *

@@ -10,14 +10,6 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    /*QString dbConfigFileName = "database.db";
-    QFile dbConfigFile(dbConfigFileName);
-    if (!dbConfigFile.open(QFile::ReadOnly)) {
-        MessageHandler::showOpenFileError(nullptr, dbConfigFileName);
-        return 1;
-    }
-    dbConfigFile.close(); */
-
     QSqlDatabase& db = DBManager::instance().getDatabase();
     if (!db.open()) {
         MessageHandler::showOpenDatabaseError(db.lastError().text());
