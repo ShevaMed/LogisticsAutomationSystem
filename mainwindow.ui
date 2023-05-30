@@ -26,8 +26,8 @@
    <string>Система автоматизації логістики</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>:/resources/resources/images/icon.png</normaloff>:/resources/resources/images/icon.png</iconset>
+   <iconset resource="resources.qrc">
+    <normaloff>:/icons/icons/icon.png</normaloff>:/icons/icons/icon.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -50,6 +50,9 @@
     </property>
     <property name="frameShadow">
      <enum>QFrame::Plain</enum>
+    </property>
+    <property name="currentIndex">
+     <number>1</number>
     </property>
     <widget class="QWidget" name="loginWidget">
      <widget class="QGroupBox" name="groupBox">
@@ -199,7 +202,7 @@
        <string/>
       </property>
       <property name="pixmap">
-       <pixmap>:/resources/resources/images/login.png</pixmap>
+       <pixmap resource="resources.qrc">:/images/images/login.png</pixmap>
       </property>
       <property name="scaledContents">
        <bool>true</bool>
@@ -224,7 +227,7 @@
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-image: url(:/resources/resources/images/status.jpg);
+         <string notr="true">background-image: url(:/images/images/status.jpg);
 </string>
         </property>
         <property name="text">
@@ -273,7 +276,7 @@
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-image: url(:/resources/resources/images/calculate.jpg);
+         <string notr="true">background-image: url(:/images/images/calculate.jpg);
 </string>
         </property>
         <property name="text">
@@ -316,7 +319,7 @@
          <bool>false</bool>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-image: url(:/resources/resources/images/arrange.jpg);
+         <string notr="true">background-image: url(:/images/images/arrange.jpg);
 
 </string>
         </property>
@@ -341,7 +344,7 @@
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-image: url(:/resources/resources/images/show.jpg);</string>
+         <string notr="true">background-image: url(:/images/images/show.jpg);</string>
         </property>
         <property name="text">
          <string>Знайти/Переглянути
@@ -3601,8 +3604,8 @@
   </widget>
   <action name="actionLogout">
    <property name="icon">
-    <iconset>
-     <normaloff>:/resources/resources/images/logout.png</normaloff>:/resources/resources/images/logout.png</iconset>
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/icons/logout.png</normaloff>:/icons/icons/logout.png</iconset>
    </property>
    <property name="text">
     <string>Вихід з облікового запису</string>
@@ -3610,8 +3613,8 @@
   </action>
   <action name="actionExit">
    <property name="icon">
-    <iconset>
-     <normaloff>:/resources/resources/images/exit.png</normaloff>:/resources/resources/images/exit.png</iconset>
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/icons/exit.png</normaloff>:/icons/icons/exit.png</iconset>
    </property>
    <property name="text">
     <string>Вихід з програми</string>
@@ -3619,14 +3622,16 @@
   </action>
   <action name="actionShowDepartments">
    <property name="icon">
-    <iconset>
-     <normaloff>:/resources/resources/images/departments.png</normaloff>:/resources/resources/images/departments.png</iconset>
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/icons/departments.png</normaloff>:/icons/icons/departments.png</iconset>
    </property>
    <property name="text">
     <string>Подивитися всі відділення</string>
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

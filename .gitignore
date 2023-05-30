@@ -11,6 +11,7 @@
 *.tmp
 *.swp
 *.bak
+*.pecBfe
 .qtc_clangd/
 .qmake.stash
 
@@ -22,11 +23,11 @@
 *.o
 *.obj
 
-# Compiled Dynamic libraries
+# Ignoring Сompiled Dynamic libraries
 *.so
 *.dylib
 
-# Compiled Static libraries
+# Ignoring Compiled Static libraries
 *.lai
 *.la
 *.a

@@ -1,14 +1,16 @@
 <RCC>
-    <qresource prefix="/resources">
-        <file>resources/images/login.png</file>
-        <file>resources/images/arrange.jpg</file>
-        <file>resources/images/show.jpg</file>
-        <file>resources/images/status.jpg</file>
-        <file>resources/images/calculate.jpg</file>
-        <file>resources/images/icon.png</file>
-        <file>resources/images/departments.png</file>
-        <file>resources/images/exit.png</file>
-        <file>resources/images/logout.png</file>
-        <file>resources/images/box.png</file>
+    <qresource prefix="/images">
+        <file>images/arrange.jpg</file>
+        <file>images/calculate.jpg</file>
+        <file>images/login.png</file>
+        <file>images/show.jpg</file>
+        <file>images/status.jpg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file>icons/box.png</file>
+        <file>icons/departments.png</file>
+        <file>icons/exit.png</file>
+        <file>icons/icon.png</file>
+        <file>icons/logout.png</file>
     </qresource>
 </RCC>

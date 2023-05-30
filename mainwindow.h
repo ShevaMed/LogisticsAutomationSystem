@@ -2,9 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QSqlDatabase>
 #include <QSqlTableModel>
-
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,12 +17,9 @@ public:
     ~MainWindow();
 
 private:
-    double calculateTheDistanceOnTheEarth(double latitudeA, double longitudeA,
-                                          double latitudeB, double longitudeB);
-
-    double calculateCost(int senderDepartmentIndex, int recieverDepartmentIndex,
-                         double length, double width, double height, double weight,
-                         int costInsurance, bool packing, int amount);
+    void resetDefaultCalculateWidget();
+    void resetDefaultArrangeWidget();
+    int defineProgress(QString status);
 
 private slots:
     void on_arrangeParcelButton_clicked();
@@ -69,18 +64,12 @@ private slots:
 
     void on_arrangeTypeComboBox_currentTextChanged(const QString &arg1);
 
-    void resetDefaultCalculateWidget();
-
-    void resetDefaultArrangeWidget();
-
     void on_calcClearToolButton_clicked();
 
 private:
     Ui::MainWindow *ui;
-    QSqlDatabase db;
-    QSqlTableModel *modelType;
-    QSqlTableModel *modelDepartments;
-    QSqlTableModel *modelOrders;
-    QSqlTableModel *modelUsers;
+    QSqlTableModel *departmentsModel_;
+    QSqlTableModel *ordersModel_;
+
 };
 #endif // MAINWINDOW_H

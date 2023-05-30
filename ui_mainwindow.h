@@ -267,23 +267,23 @@ public:
         MainWindow->setMinimumSize(QSize(600, 500));
         MainWindow->setMaximumSize(QSize(600, 500));
         QIcon icon;
-        icon.addFile(QString::fromUtf8(":/resources/resources/images/icon.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QString::fromUtf8(":/icons/icons/icon.png"), QSize(), QIcon::Normal, QIcon::Off);
         MainWindow->setWindowIcon(icon);
         MainWindow->setStyleSheet(QString::fromUtf8(""));
         actionLogout = new QAction(MainWindow);
         actionLogout->setObjectName("actionLogout");
         QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/resources/resources/images/logout.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon1.addFile(QString::fromUtf8(":/icons/icons/logout.png"), QSize(), QIcon::Normal, QIcon::Off);
         actionLogout->setIcon(icon1);
         actionExit = new QAction(MainWindow);
         actionExit->setObjectName("actionExit");
         QIcon icon2;
-        icon2.addFile(QString::fromUtf8(":/resources/resources/images/exit.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon2.addFile(QString::fromUtf8(":/icons/icons/exit.png"), QSize(), QIcon::Normal, QIcon::Off);
         actionExit->setIcon(icon2);
         actionShowDepartments = new QAction(MainWindow);
         actionShowDepartments->setObjectName("actionShowDepartments");
         QIcon icon3;
-        icon3.addFile(QString::fromUtf8(":/resources/resources/images/departments.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon3.addFile(QString::fromUtf8(":/icons/icons/departments.png"), QSize(), QIcon::Normal, QIcon::Off);
         actionShowDepartments->setIcon(icon3);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName("centralwidget");
@@ -369,7 +369,7 @@ public:
         loginIconLabel = new QLabel(loginWidget);
         loginIconLabel->setObjectName("loginIconLabel");
         loginIconLabel->setGeometry(QRect(40, 130, 180, 180));
-        loginIconLabel->setPixmap(QPixmap(QString::fromUtf8(":/resources/resources/images/login.png")));
+        loginIconLabel->setPixmap(QPixmap(QString::fromUtf8(":/images/images/login.png")));
         loginIconLabel->setScaledContents(true);
         stackedWidget->addWidget(loginWidget);
         mainMenuWidget = new QWidget();
@@ -388,7 +388,7 @@ public:
         font4.setPointSize(18);
         font4.setBold(true);
         statusShowChangeButton->setFont(font4);
-        statusShowChangeButton->setStyleSheet(QString::fromUtf8("background-image: url(:/resources/resources/images/status.jpg);\n"
+        statusShowChangeButton->setStyleSheet(QString::fromUtf8("background-image: url(:/images/images/status.jpg);\n"
 ""));
 
         gridLayout->addWidget(statusShowChangeButton, 4, 0, 1, 1);
@@ -415,7 +415,7 @@ public:
         sizePolicy1.setHeightForWidth(calculateButton->sizePolicy().hasHeightForWidth());
         calculateButton->setSizePolicy(sizePolicy1);
         calculateButton->setFont(font4);
-        calculateButton->setStyleSheet(QString::fromUtf8("background-image: url(:/resources/resources/images/calculate.jpg);\n"
+        calculateButton->setStyleSheet(QString::fromUtf8("background-image: url(:/images/images/calculate.jpg);\n"
 ""));
 
         gridLayout->addWidget(calculateButton, 3, 1, 1, 1);
@@ -430,7 +430,7 @@ public:
         arrangeParcelButton->setSizePolicy(sizePolicy1);
         arrangeParcelButton->setFont(font4);
         arrangeParcelButton->setAutoFillBackground(false);
-        arrangeParcelButton->setStyleSheet(QString::fromUtf8("background-image: url(:/resources/resources/images/arrange.jpg);\n"
+        arrangeParcelButton->setStyleSheet(QString::fromUtf8("background-image: url(:/images/images/arrange.jpg);\n"
 "\n"
 ""));
 
@@ -441,7 +441,7 @@ public:
         sizePolicy1.setHeightForWidth(searchShowAllButton->sizePolicy().hasHeightForWidth());
         searchShowAllButton->setSizePolicy(sizePolicy1);
         searchShowAllButton->setFont(font4);
-        searchShowAllButton->setStyleSheet(QString::fromUtf8("background-image: url(:/resources/resources/images/show.jpg);"));
+        searchShowAllButton->setStyleSheet(QString::fromUtf8("background-image: url(:/images/images/show.jpg);"));
 
         gridLayout->addWidget(searchShowAllButton, 4, 1, 1, 1);
 
@@ -1771,6 +1771,7 @@ public:
 
         retranslateUi(MainWindow);
 
+        stackedWidget->setCurrentIndex(1);
         statusStatusChangeComboBox->setCurrentIndex(-1);
 
 

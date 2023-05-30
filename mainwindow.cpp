@@ -1,176 +1,60 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "dbmanager.h"
+#include "calculation.h"
 
-#define EARTH_RADIUS 6371
-
-#include <QMessageBox>
 #include <QSqlRecord>
 #include <QDateTime>
-#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    : QMainWindow(parent),
+      ui(new Ui::MainWindow),
+      departmentsModel_(DBManager::instance().getDepartmentsModel()),
+      ordersModel_(DBManager::instance().getOrdersModel())
 {
     ui->setupUi(this);
 
     ui->actionLogout->setDisabled(true);
     ui->actionShowDepartments->setDisabled(true);
 
-    db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("./DB.db");
+    ui->arrangeTypeComboBox->setModel(DBManager::instance().getTypeModel());
+    ui->arrangeTypeComboBox->setModelColumn(1);
 
-    if (db.open())
-    {
-        qDebug("open");
+    ui->calcTypeComboBox->setModel(DBManager::instance().getTypeModel());
+    ui->calcTypeComboBox->setModelColumn(1);
 
-        //---TypeOfDispatch-------------------------------------------------------------------------------------
-        modelType = new QSqlTableModel(this, db);
-        modelType->setTable("TypeOfDispatch");
-        modelType->select();
+    ui->arrangeCitySenderComboBox->setModel(departmentsModel_);
+    ui->arrangeCitySenderComboBox->setModelColumn(1);
+    ui->arrangeCityRecieverComboBox->setModel(departmentsModel_);
+    ui->arrangeCityRecieverComboBox->setModelColumn(1);
 
-        ui->arrangeTypeComboBox->setModel(modelType);
-        ui->arrangeTypeComboBox->setModelColumn(1);
+    ui->calcCitySenderComboBox->setModel(departmentsModel_);
+    ui->calcCitySenderComboBox->setModelColumn(1);
+    ui->calcCityRecieverComboBox->setModel(departmentsModel_);
+    ui->calcCityRecieverComboBox->setModelColumn(1);
 
-        ui->calcTypeComboBox->setModel(modelType);
-        ui->calcTypeComboBox->setModelColumn(1);
+    ui->departmentsTableView->setModel(departmentsModel_);
+    ui->departmentsTableView->horizontalHeader()
+            ->setSectionResizeMode(QHeaderView::ResizeToContents);
+    ui->departmentsTableView->setColumnHidden(0, true);
 
-        //---Departments-----------------------------------------------------------------------------------------
-        modelDepartments = new QSqlTableModel(this, db);
-        modelDepartments->setTable("Departments");
-        modelDepartments->select();
+    ui->searchShowAllTableView->setModel(ordersModel_);
+    ui->searchShowAllTableView->horizontalHeader()
+            ->setSectionResizeMode(QHeaderView::ResizeToContents);
 
-        modelDepartments->setHeaderData(1, Qt::Horizontal, "Місцезнаходження", Qt::DisplayRole);
-        modelDepartments->setHeaderData(2, Qt::Horizontal, "Географічна Широта", Qt::DisplayRole);
-        modelDepartments->setHeaderData(3, Qt::Horizontal, "Географічна Довгота", Qt::DisplayRole);
-
-        ui->arrangeCitySenderComboBox->setModel(modelDepartments);
-        ui->arrangeCitySenderComboBox->setModelColumn(1);
-        ui->arrangeCityRecieverComboBox->setModel(modelDepartments);
-        ui->arrangeCityRecieverComboBox->setModelColumn(1);
-
-        ui->calcCitySenderComboBox->setModel(modelDepartments);
-        ui->calcCitySenderComboBox->setModelColumn(1);
-        ui->calcCityRecieverComboBox->setModel(modelDepartments);
-        ui->calcCityRecieverComboBox->setModelColumn(1);
-
-        ui->departmentsTableView->setModel(modelDepartments);
-        ui->departmentsTableView->horizontalHeader()
-                ->setSectionResizeMode(QHeaderView::ResizeToContents);
-        ui->departmentsTableView->setColumnHidden(0, true);
-
-        //---Orders------------------------------------------------------------------------------------------------
-        modelOrders = new QSqlTableModel(this, db);
-        modelOrders->setTable("Orders");
-        modelOrders->select();
-
-        modelOrders->setHeaderData(0, Qt::Horizontal, "№ Відправлення", Qt::DisplayRole);
-        modelOrders->setHeaderData(1, Qt::Horizontal, "Статус відправлення", Qt::DisplayRole);
-        modelOrders->setHeaderData(2, Qt::Horizontal, "Дата відправлення", Qt::DisplayRole);
-        modelOrders->setHeaderData(3, Qt::Horizontal, "Вартість", Qt::DisplayRole);
-        modelOrders->setHeaderData(4, Qt::Horizontal, "Місто-відправник", Qt::DisplayRole);
-        modelOrders->setHeaderData(5, Qt::Horizontal, "Місто-отримувач", Qt::DisplayRole);
-        modelOrders->setHeaderData(6, Qt::Horizontal, "ПІБ відправника", Qt::DisplayRole);
-        modelOrders->setHeaderData(7, Qt::Horizontal, "ПІБ отримувача", Qt::DisplayRole);
-        modelOrders->setHeaderData(8, Qt::Horizontal, "Телефон відправника", Qt::DisplayRole);
-        modelOrders->setHeaderData(9, Qt::Horizontal, "Телефон отримувача", Qt::DisplayRole);
-        modelOrders->setHeaderData(10, Qt::Horizontal, "Тип відправлення", Qt::DisplayRole);
-        modelOrders->setHeaderData(11, Qt::Horizontal, "Вага", Qt::DisplayRole);
-        modelOrders->setHeaderData(12, Qt::Horizontal, "Довжина", Qt::DisplayRole);
-        modelOrders->setHeaderData(13, Qt::Horizontal, "Ширина", Qt::DisplayRole);
-        modelOrders->setHeaderData(14, Qt::Horizontal, "Висота", Qt::DisplayRole);
-        modelOrders->setHeaderData(15, Qt::Horizontal, "Сума страхування", Qt::DisplayRole);
-        modelOrders->setHeaderData(16, Qt::Horizontal, "Отримувач сплачює суму страхування",
-                                   Qt::DisplayRole);
-        modelOrders->setHeaderData(17, Qt::Horizontal, "Пакування", Qt::DisplayRole);
-        modelOrders->setHeaderData(18, Qt::Horizontal, "Доставку сплачює", Qt::DisplayRole);
-
-        ui->searchShowAllTableView->setModel(modelOrders);
-        ui->searchShowAllTableView->horizontalHeader()
-                ->setSectionResizeMode(QHeaderView::ResizeToContents);
-
-        ui->statusShowChangeTableView->setModel(modelOrders);
-        ui->statusShowChangeTableView->horizontalHeader()
-                ->setSectionResizeMode(QHeaderView::ResizeToContents);
-
-        //---UsersInfo-----------------------------------------------------------------------------------------------
-        modelUsers = new QSqlTableModel(this, db);
-        modelUsers->setTable("UsersInfo");
-        modelUsers->select();
-    }
-    else
-    {
-        qDebug("no open");
-    }
+    ui->statusShowChangeTableView->setModel(ordersModel_);
+    ui->statusShowChangeTableView->horizontalHeader()
+            ->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     ui->calcCityRecieverComboBox->setCurrentIndex(-1);
     ui->calcCitySenderComboBox->setCurrentIndex(-1);
     ui->arrangeCityRecieverComboBox->setCurrentIndex(-1);
     ui->arrangeCitySenderComboBox->setCurrentIndex(-1);
-
 }
 
 MainWindow::~MainWindow()
 {
-    db.close();
     delete ui;
-}
-
-
-double MainWindow::calculateTheDistanceOnTheEarth(double latitudeA, double longitudeA,
-                                                  double latitudeB, double longitudeB)
-{
-    // перевести координаты в радианы
-    double latA = latitudeA * M_PI / 180;
-    double latB = latitudeB * M_PI / 180;
-    double longA = longitudeA * M_PI / 180;
-    double longB = longitudeB * M_PI / 180;
-
-    // косинусы и синусы широт и разницы долгот
-    double cos_latA = cos(latA);
-    double cos_latB = cos(latB);
-    double sin_latA = sin(latA);
-    double sin_latB = sin(latB);
-    double delta = longB - longA;
-    double cos_delta = cos(delta);
-    double sin_delta = sin(delta);
-
-    // вычисления длины большого круга
-    double x = sin_latA * sin_latB + cos_latA * cos_latB * cos_delta;
-    double y = sqrt((cos_latB * sin_delta) * (cos_latB * sin_delta) +
-                    (cos_latA * sin_latB - sin_latA * cos_latB * cos_delta) *
-                    (cos_latA * sin_latB - sin_latA * cos_latB * cos_delta));
-
-    return atan2(y, x) * EARTH_RADIUS;
-}
-
-
-double MainWindow::calculateCost(int senderDepartmentIndex, int recieverDepartmentIndex,
-                                 double length, double width, double height, double weight,
-                                 int costInsurance, bool packing, int amount)
-{
-    double senderLatitude = modelDepartments->record(senderDepartmentIndex)
-            .value("GeographicalLatitude").toDouble();
-    double senderLongitude = modelDepartments->record(senderDepartmentIndex)
-            .value("GeographicalLongitude").toDouble();
-    double recieverLatitude = modelDepartments->record(recieverDepartmentIndex)
-            .value("GeographicalLatitude").toDouble();
-    double recieverLongitude = modelDepartments->record(recieverDepartmentIndex)
-            .value("GeographicalLongitude").toDouble();
-
-    double distance = calculateTheDistanceOnTheEarth(senderLatitude, senderLongitude,
-                                                     recieverLatitude, recieverLongitude);
-    double volume = (length * width * height) / 1000;
-    double profile = (volume > weight) ? volume : weight;
-
-    double cost = 50 + distance * 0.1 + profile * 5 + costInsurance * 0.005;
-
-    if(packing)
-        cost += volume * 8;
-
-    cost *= amount;
-
-    return cost;
 }
 
 
@@ -194,66 +78,25 @@ void MainWindow::on_calcCalculatePushButton_clicked()
 
     int senderDepartmentIndex = ui->calcCitySenderComboBox->currentIndex();
     int recieverDepartmentIndex = ui->calcCityRecieverComboBox->currentIndex();
-
-    if (senderDepartmentIndex == -1 || recieverDepartmentIndex == -1)
-    {
-        ui->statusBar->showMessage("Введіть маршрут!");
-        return;
-    }
-
-    if (senderDepartmentIndex == recieverDepartmentIndex)
-    {
-        ui->statusBar->showMessage("Некоректний маршрут! Міста повинні бути різними");
-        return;
-    }
-
     QString type = ui->calcTypeComboBox->currentText();
-    double length = 0.0, width = 0.0, height = 0.0, weight = 0.0;
-
-    if (type == "Посилка")
-    {
-        length = ui->calcLengthLineEdit->text().toDouble();
-        width = ui->calcWidthLineEdit->text().toDouble();
-        height = ui->calcHeightLineEdit->text().toDouble();
-        weight = ui->calcWeightLineEdit->text().toDouble();
-
-        if (weight == 0.0)
-        {
-            ui->statusBar->showMessage("Введіть коректну вагу відправлення!");
-            return;
-        }
-
-        if (length == 0.0 || width == 0.0 || height == 0.0)
-        {
-            ui->statusBar->showMessage("Введіть коректно всі розміри відправлення!");
-            return;
-        }
-    }
-
-    if (type == "Документи")
-    {
-        length = 30;
-        width = 23;
-        height = 2;
-        weight = 0.2;
-    }
-
+    double length = ui->calcLengthLineEdit->text().toDouble();
+    double width = ui->calcWidthLineEdit->text().toDouble();
+    double height = ui->calcHeightLineEdit->text().toDouble();
+    double weight = ui->calcWeightLineEdit->text().toDouble();
     int costInsurance = ui->calcCostInsuranceLineEdit->text().toInt();
 
-    if (costInsurance == 0)
-    {
-        ui->statusBar->showMessage("Введіть коректну ціну страхування!");
+    if (!Calculation::defineParamsParcelDependOfType(ui->statusBar, type, senderDepartmentIndex,
+                                                     recieverDepartmentIndex, length, width,
+                                                     height, weight, costInsurance)) {
         return;
     }
 
     bool packing = ui->calcPackingCheckBox->isChecked();
     int amount = ui->calcAmountSpinBox->value();
-
-    int cost = calculateCost(senderDepartmentIndex, recieverDepartmentIndex,
-                             length, width, height, weight, costInsurance, packing, amount);
-
+    int cost = Calculation::calculateCost(senderDepartmentIndex, recieverDepartmentIndex,
+                                          length, width, height, weight,
+                                          costInsurance, packing, amount);
     ui->calcCostLCDNumber->display(cost);
-
     ui->statusBar->showMessage("Розраховано!");
 }
 
@@ -278,210 +121,99 @@ void MainWindow::on_searchShowAllButton_clicked()
 
 void MainWindow::on_arrangeArrangePushButton_clicked()
 {
-    int senderDepartmentIndex = ui->arrangeCitySenderComboBox->currentIndex();
-    int recieverDepartmentIndex = ui->arrangeCityRecieverComboBox->currentIndex();
+    QString fullNameSender = ui->arrangeSenderFullNameLineEdit->text();
+    QString fullNameReciever = ui->arrangeRecieverFullNameLineEdit->text();
 
-    if (senderDepartmentIndex == -1 || recieverDepartmentIndex == -1)
-    {
-        ui->statusBar->showMessage("Введіть маршрут!");
-        return;
-    }
-
-    if (senderDepartmentIndex == recieverDepartmentIndex)
-    {
-        ui->statusBar->showMessage("Некоректний маршрут! Міста повинні бути різними");
-        return;
-    }
-
-    QString FullNameSender = ui->arrangeSenderFullNameLineEdit->text();
-    QString FullNameReciever = ui->arrangeRecieverFullNameLineEdit->text();
-
-    if (FullNameSender == "")
-    {
+    if (fullNameSender.isEmpty()) {
         ui->statusBar->showMessage("Введіть ПІБ відправника!");
         return;
     }
 
-    if (FullNameReciever == "")
-    {
+    if (fullNameReciever.isEmpty()) {
         ui->statusBar->showMessage("Введіть ПІБ отримувача!");
         return;
     }
 
-    QString PhoneSender = ui->arrangeSenderPhoneLineEdit->text();
-    QString PhoneReciever = ui->arrangeRecieverPhoneLineEdit->text();
+    QString phoneSender = ui->arrangeSenderPhoneLineEdit->text();
+    QString phoneReciever = ui->arrangeRecieverPhoneLineEdit->text();
 
-    if (PhoneSender.length() != 19)
-    {
+    if (phoneSender.length() != 19) {
         ui->statusBar->showMessage("Введіть коректний телефон відправника!");
         return;
     }
 
-    if (PhoneReciever.length() != 19)
-    {
+    if (phoneReciever.length() != 19) {
         ui->statusBar->showMessage("Введіть коректний телефон отримувача!");
         return;
     }
 
+    ui->statusBar->clearMessage();
+
+    int senderDepartmentIndex = ui->arrangeCitySenderComboBox->currentIndex();
+    int recieverDepartmentIndex = ui->arrangeCityRecieverComboBox->currentIndex();
     QString type = ui->arrangeTypeComboBox->currentText();
-    double length = 0.0, width = 0.0, height = 0.0, weight = 0.0;
-
-    if (type == "Посилка")
-    {
-        length = ui->arrangeLengthLineEdit->text().toDouble();
-        width = ui->arrangeWidthLineEdit->text().toDouble();
-        height = ui->arrangeHeightLineEdit->text().toDouble();
-        weight = ui->arrangeWeightLineEdit->text().toDouble();
-
-        if (weight == 0.0)
-        {
-            ui->statusBar->showMessage("Введіть коректну вагу відправлення!");
-            return;
-        }
-
-        if (length == 0.0 || width == 0.0 || height == 0.0)
-        {
-            ui->statusBar->showMessage("Введіть коректно всі розміри відправлення!");
-            return;
-        }
-    }
-
-    if (type == "Документи")
-    {
-        length = 30;
-        width = 23;
-        height = 2;
-        weight = 0.2;
-    }
-
+    double length = ui->arrangeLengthLineEdit->text().toDouble();
+    double width = ui->arrangeWidthLineEdit->text().toDouble();
+    double height = ui->arrangeHeightLineEdit->text().toDouble();
+    double weight = ui->arrangeWeightLineEdit->text().toDouble();
     int costInsurance = ui->arrangeCostInsuranceLineEdit->text().toInt();
 
-    if (costInsurance == 0)
-    {
-        ui->statusBar->showMessage("Введіть коректну ціну страхування!");
+    if (!Calculation::defineParamsParcelDependOfType(ui->statusBar, type, senderDepartmentIndex,
+                                                     recieverDepartmentIndex, length, width,
+                                                     height, weight, costInsurance)) {
         return;
     }
 
     bool packing = ui->arrangePackingCheckBox->isChecked();
     int amount = ui->arrangeAmountSpinBox->value();
+    int cost = Calculation::calculateCost(senderDepartmentIndex, recieverDepartmentIndex,
+                                          length, width, height, weight,
+                                          costInsurance, packing, amount);
+    QString senderCity = ui->arrangeCitySenderComboBox->currentText();
+    QString receiverCity = ui->arrangeCitySenderComboBox->currentText();
+    bool recieverPays = ui->arrangeRecieverPayCheckBox->isChecked();
+    QString parcelPays = ui->arrangeParcelPayComboBox->currentText();
 
-    int cost = calculateCost(senderDepartmentIndex, recieverDepartmentIndex,
-                             length, width, height, weight, costInsurance, packing, amount);
+    int numberOrder =
+            DBManager::instance().arrangeParcel(cost, senderCity, receiverCity, fullNameSender,
+                                                fullNameReciever, phoneSender, phoneReciever,
+                                                type, weight, length, width, height, costInsurance,
+                                                recieverPays, packing, parcelPays);
+    if (-1 == numberOrder) {
+        ui->statusBar->showMessage("Помилка оформлення відправлення!");
+        return;
+    }
 
-    ui->statusBar->clearMessage();
-
-    int rowIndex = modelOrders->rowCount();
-    modelOrders->insertRow(rowIndex);
-
-    modelOrders->setData(modelOrders
-                         ->index(rowIndex, modelOrders->fieldIndex("Key")),
-                         rowIndex + 1);
-    modelOrders->setData(modelOrders
-                         ->index(rowIndex, modelOrders->fieldIndex("StatusParcel")),
-                         "Комплектується");
-    modelOrders->setData(modelOrders
-                         ->index(rowIndex, modelOrders->fieldIndex("DateOfDispatch")),
-                         QDateTime::currentDateTime().toString());
-    modelOrders->setData(modelOrders
-                         ->index(rowIndex, modelOrders->fieldIndex("Cost")),
-                         cost);
-    modelOrders->setData(modelOrders
-                         ->index(rowIndex, modelOrders->fieldIndex("SenderСity")),
-                         ui->arrangeCitySenderComboBox->currentText());
-    modelOrders->setData(modelOrders
-                         ->index(rowIndex, modelOrders->fieldIndex("RecieverCity")),
-                         ui->arrangeCityRecieverComboBox->currentText());
-    modelOrders->setData(modelOrders
-                         ->index(rowIndex, modelOrders->fieldIndex("SenderFullName")),
-                         FullNameSender);
-    modelOrders->setData(modelOrders
-                         ->index(rowIndex, modelOrders->fieldIndex("RecieverFullName")),
-                         FullNameReciever);
-    modelOrders->setData(modelOrders
-                         ->index(rowIndex, modelOrders->fieldIndex("SenderPhone")),
-                         PhoneSender);
-    modelOrders->setData(modelOrders
-                         ->index(rowIndex, modelOrders->fieldIndex("RecieverPhone")),
-                         PhoneReciever);
-    modelOrders->setData(modelOrders
-                         ->index(rowIndex, modelOrders->fieldIndex("Type")),
-                         type);
-    modelOrders->setData(modelOrders
-                         ->index(rowIndex, modelOrders->fieldIndex("Weight")),
-                         weight);
-    modelOrders->setData(modelOrders
-                         ->index(rowIndex, modelOrders->fieldIndex("Length")),
-                         length);
-    modelOrders->setData(modelOrders
-                         ->index(rowIndex, modelOrders->fieldIndex("Width")),
-                         width);
-    modelOrders->setData(modelOrders
-                         ->index(rowIndex, modelOrders->fieldIndex("Height")),
-                         height);
-    modelOrders->setData(modelOrders
-                         ->index(rowIndex, modelOrders->fieldIndex("CostOfInsurance")),
-                         costInsurance);
-    modelOrders->setData(modelOrders
-                         ->index(rowIndex, modelOrders->fieldIndex("RecieverPays")),
-                         ui->arrangeRecieverPayCheckBox->isChecked());
-    modelOrders->setData(modelOrders
-                         ->index(rowIndex, modelOrders->fieldIndex("Packaging")),
-                         ui->arrangePackingCheckBox->isChecked());
-    modelOrders->setData(modelOrders
-                         ->index(rowIndex, modelOrders->fieldIndex("ParcelPays")),
-                         ui->arrangeParcelPayComboBox->currentText());
-
-    modelOrders->submitAll();
-
-    QString numberOrder = std::to_string(rowIndex + 1).c_str();
-    QString costOrder = std::to_string(cost).c_str();
-
-    QString informationOrder = "Номер відправлення: " + numberOrder +
-            "\n\nВартість доставки: " + costOrder + " грн";
-
-    QMessageBox boxOrder(QMessageBox::Information, "Відправлення №" +
-                         numberOrder, "Відправлення успішно сформовано!");
-
-    boxOrder.setInformativeText(informationOrder);
-    boxOrder.setWindowIcon(QIcon(":/resources/resources/images/box.png"));
-    boxOrder.exec();
-
-    ui->statusBar->showMessage("Відправлення №" + numberOrder + " успішно сформовано!");
+    ui->statusBar->showMessage("Відправлення №" + QString::number(numberOrder) +
+                               " успішно сформовано!");
     ui->stackedWidget->setCurrentWidget(ui->mainMenuWidget);
-
-    resetDefaultArrangeWidget();
+    this->resetDefaultArrangeWidget();
 }
 
 
 void MainWindow::on_searchShowAllpushButton_clicked()
 {
     ui->searchSearchLineEdit->clear();
-    modelOrders->setFilter("");
+    ordersModel_->setFilter("");
 }
 
 
 void MainWindow::on_searchSearchLineEdit_textChanged(const QString &arg1)
 {
-    modelOrders->setFilter("");
+    ordersModel_->setFilter("");
 
-    if (arg1 == "")
-    {
+    if (arg1 == "") {
         ui->statusBar->showMessage("Показані всі відправлення");
+        return;
     }
-    else
-    {
-        if (!modelOrders->record(arg1.toInt() - 1).value("Key").isNull())
-        {
-            modelOrders->setFilter("Key = " + arg1);
-            ui->searchShowAllTableView->selectRow(0);
 
-            ui->statusBar->showMessage("Відправлення №" + arg1 + " знайдено!");
-        }
-        else
-        {
-            modelOrders->setFilter("Key = 0");
-            ui->statusBar->showMessage("Відправлення №" + arg1 + " не знайдено!");
-        }
+    if (!ordersModel_->record(arg1.toInt() - 1).value("Key").isNull()) {
+        ordersModel_->setFilter("Key = " + arg1);
+        ui->searchShowAllTableView->selectRow(0);
+        ui->statusBar->showMessage("Відправлення №" + arg1 + " знайдено!");
+    } else {
+        ordersModel_->setFilter("Key = 0");
+        ui->statusBar->showMessage("Відправлення №" + arg1 + " не знайдено!");
     }
 }
 
@@ -493,64 +225,44 @@ void MainWindow::on_statusInNumberLineEdit_textChanged(const QString &arg1)
     ui->statusStatusChangeComboBox->setCurrentIndex(-1);
     ui->statusStatusChangeComboBox->setDisabled(true);
 
-    if (arg1 == "")
-    {
-        modelOrders->setFilter("Key = 0");
+    if (arg1 == "") {
+        ordersModel_->setFilter("Key = 0");
         ui->statusBar->clearMessage();
+        return;
     }
-    else
-    {
-        modelOrders->setFilter("");
-        QString status = modelOrders->record(arg1.toInt() - 1).value("StatusParcel").toString();
 
-        if (status != "")
-        {
-            modelOrders->setFilter("Key = " + arg1);
-            ui->statusShowChangeTableView->selectRow(0);
+    ordersModel_->setFilter("");
+    QString status = ordersModel_->record(arg1.toInt() - 1).value("StatusParcel").toString();
 
-            ui->statusStatusShowLabel->setText(status);
-            ui->statusStatusChangeComboBox->setEnabled(true);
-            ui->statusStatusChangeComboBox
+    if (status != "") {
+        ordersModel_->setFilter("Key = " + arg1);
+        ui->statusShowChangeTableView->selectRow(0);
+
+        ui->statusStatusShowLabel->setText(status);
+        ui->statusStatusChangeComboBox->setEnabled(true);
+        ui->statusStatusChangeComboBox
                     ->setCurrentIndex(ui->statusStatusChangeComboBox->findText(status));
 
-            int progress = 0;
-            if (status == "Комплектується")
-                progress = 20;
-            else if (status == "В дорозі")
-                progress = 65;
-            else if (status == "Доставлено")
-                progress = 100;
-
-            ui->statusProgressBar->setValue(progress);
-            ui->statusBar->showMessage("Відправлення №" + arg1 + " знайдено!");
-        }
-        else
-        {
-            modelOrders->setFilter("Key = 0");
-            ui->statusBar->showMessage("Відправлення №" + arg1 + " не знайдено!");
-        }
+        int progress = this->defineProgress(arg1);
+        ui->statusProgressBar->setValue(progress);
+        ui->statusBar->showMessage("Відправлення №" + arg1 + " знайдено!");
+    } else {
+        ordersModel_->setFilter("Key = 0");
+        ui->statusBar->showMessage("Відправлення №" + arg1 + " не знайдено!");
     }
 }
 
 
 void MainWindow::on_statusStatusChangeComboBox_currentTextChanged(const QString &arg1)
 {
-    modelOrders->setData(modelOrders->index(0, modelOrders->fieldIndex("StatusParcel")), arg1);
-    modelOrders->submitAll();
+    ordersModel_->setData(ordersModel_->index(0, ordersModel_->fieldIndex("StatusParcel")), arg1);
+    ordersModel_->submitAll();
 
     ui->statusStatusShowLabel->setText(arg1);
-
-    int progress = 0;
-    if (arg1 == "Комплектується")
-        progress = 20;
-    else if (arg1 == "В дорозі")
-        progress = 65;
-    else if (arg1 == "Доставлено")
-        progress = 100;
-
+    int progress = this->defineProgress(arg1);
     ui->statusProgressBar->setValue(progress);
 
-    QString numberOrder = modelOrders->record(0).value("Key").toString();
+    QString numberOrder = ordersModel_->record(0).value("Key").toString();
     ui->statusBar->showMessage("Статус відправлення №" + numberOrder + " змінено!");
 }
 
@@ -585,7 +297,7 @@ void MainWindow::on_searchMainMenuCommandLinkButton_clicked()
 
 void MainWindow::on_actionExit_triggered()
 {
-    close();
+    this->close();
 }
 
 
@@ -593,33 +305,31 @@ void MainWindow::on_actionLogout_triggered()
 {
     ui->passwordLineEdit->clear();
     ui->stackedWidget->setCurrentWidget(ui->loginWidget);
+    ui->statusBar->clearMessage();
 
     ui->actionLogout->setDisabled(true);
     ui->actionShowDepartments->setDisabled(true);
 
-    resetDefaultArrangeWidget();
-    resetDefaultCalculateWidget();
+    this->resetDefaultArrangeWidget();
+    this->resetDefaultCalculateWidget();
     ui->statusInNumberLineEdit->clear();
     ui->searchSearchLineEdit->clear();
-
-    ui->statusBar->clearMessage();
 }
 
 
 void MainWindow::on_loginPushButton_clicked()
 {
-    int usersCount = modelUsers->rowCount();
+    QSqlTableModel *usersModel = DBManager::instance().getTypeModel();
+    int usersCount = usersModel->rowCount();
 
-    for (int i = 0; i < usersCount; i++)
-    {
-        QString login = modelUsers->record(i).value("Login").toString();
-        QString password = modelUsers->record(i).value("Password").toString();
+    for (int i = 0; i < usersCount; ++i) {
+        QString login = usersModel->record(i).value("Login").toString();
 
-        if (login == ui->loginLineEdit->text())
-        {
-            if (password == ui->passwordLineEdit->text())
-            {
-                QString name = modelUsers->record(i).value("FullName").toString();
+        if (ui->loginLineEdit->text() == login) {
+            QString password = usersModel->record(i).value("Password").toString();
+
+            if (ui->passwordLineEdit->text() == password) {
+                QString name = usersModel->record(i).value("FullName").toString();
                 ui->mainGreetingLabel->setText("Обліковий запис: " + name);
 
                 ui->stackedWidget->setCurrentWidget(ui->mainMenuWidget);
@@ -628,16 +338,13 @@ void MainWindow::on_loginPushButton_clicked()
                 ui->actionLogout->setEnabled(true);
                 ui->actionShowDepartments->setEnabled(true);
                 return;
-            }
-            else
-            {
+            } else {
                 ui->statusBar->showMessage("Невірний пароль!");
                 ui->passwordLineEdit->clear();
                 return;
             }
         }
     }
-
     ui->statusBar->showMessage("Недійсний логін!");
 }
 
@@ -658,16 +365,13 @@ void MainWindow::on_departmentsMainMenuCommandLinkButton_clicked()
 
 void MainWindow::on_calcTypeComboBox_currentTextChanged(const QString &arg1)
 {
-    if (arg1 == "Посилка")
-    {
+    if (arg1 == "Посилка") {
         ui->calcWeightLineEdit->setEnabled(true);
         ui->calcWidthLineEdit->setEnabled(true);
         ui->calcLengthLineEdit->setEnabled(true);
         ui->calcHeightLineEdit->setEnabled(true);
     }
-
-    if (arg1 == "Документи")
-    {
+    else if (arg1 == "Документи") {
         ui->calcWeightLineEdit->clear();
         ui->calcWidthLineEdit->clear();
         ui->calcLengthLineEdit->clear();
@@ -683,16 +387,13 @@ void MainWindow::on_calcTypeComboBox_currentTextChanged(const QString &arg1)
 
 void MainWindow::on_arrangeTypeComboBox_currentTextChanged(const QString &arg1)
 {
-    if (arg1 == "Посилка")
-    {
+    if ("Посилка" == arg1) {
         ui->arrangeWeightLineEdit->setEnabled(true);
         ui->arrangeWidthLineEdit->setEnabled(true);
         ui->arrangeLengthLineEdit->setEnabled(true);
         ui->arrangeHeightLineEdit->setEnabled(true);
     }
-
-    if (arg1 == "Документи")
-    {
+    else if ("Документи" == arg1) {
         ui->arrangeWeightLineEdit->clear();
         ui->arrangeWidthLineEdit->clear();
         ui->arrangeLengthLineEdit->clear();
@@ -747,9 +448,22 @@ void MainWindow::resetDefaultArrangeWidget()
 }
 
 
+int MainWindow::defineProgress(QString status)
+{
+    int progress = 0;
+    if ("Комплектується" == status)
+        progress = 20;
+    else if ("В дорозі" == status)
+        progress = 65;
+    else if ("Доставлено" == status)
+        progress = 100;
+    return progress;
+}
+
+
 void MainWindow::on_calcClearToolButton_clicked()
 {
-    resetDefaultCalculateWidget();
+    this->resetDefaultCalculateWidget();
     ui->statusBar->clearMessage();
 }
 
