@@ -1,11 +1,17 @@
 # Logistics Automation System
-Logistics Automation System is software designed to simplify and increase the efficiency of logistics processes. The system is intended for operators working in logistics departments or logistics companies.
+Logistics Automation System is software designed to simplify and increase the efficiency of logistics processes.
+
+Logistics Automation System is written in Qt (C++) for the Windows platform. SQLite is used as the database.
+
+The system is intended for operators working in logistics departments or logistics companies.
 
 ## Installation
 To set up the project, follow these steps:
 1. Clone the repository to your local machine.
 2. Install the necessary technologies and libraries specified in the project's [Technologies Used](#technologies-used).
-3. Build and compile the project using your preferred development environment.
+3. Build a project with Qt Creator using the `LogisticsAutomationSystem/LogisticsAutomationSystem.pro` file.
+4. Compile the project with the Desktop compiler MinGW 64bit.
+5. Now you can run the program using Qt Creator or `.exe` file.
 
 ## Usage
 Once the project is set up and running, you can perform the following actions:
@@ -15,8 +21,7 @@ Once the project is set up and running, you can perform the following actions:
 - Parcel status management: The system allows users to change the status of parcels as they progress through the logistics chain. This feature provides real-time visibility into the movement and status of parcels.
 
 ## Technologies Used
-- Languaes: C++17
-- Frameworks: Qt 6.4.0
+- Framework: Qt 6.4.0 in C++
 - Database: SQLite
-- IDE: Qt Creator 8.0.2, DB Browser (SQLite)
+- IDE: Qt Creator 8.0.2
 - Compiler: Desktop MinGW 64bit
