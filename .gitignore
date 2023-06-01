@@ -12,6 +12,8 @@
 *.swp
 *.bak
 *.pecBfe
+
+# Ignoring temporary folders Qt Creator
 .qtc_clangd/
 .qmake.stash
 
@@ -22,6 +24,9 @@
 *.lo
 *.o
 *.obj
+
+#Ignoring forms temporary files
+ui_*.h
 
 # Ignoring Сompiled Dynamic libraries
 *.so
@@ -46,12 +51,12 @@ release/
 *.debug/
 *.release/
 
-# Ignore startup files
+# Ignoring startup files
 *.autosave
 *.autosave.*
 
 # Ignoring Qt Linguist project files
 *.ts
 
-# Ignore backup files
+# Ignoring backup files
 *~
