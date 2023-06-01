@@ -22,7 +22,7 @@ HEADERS += \
     messagehandler.h
 
 FORMS += \
-    mainwindow.ui
+    forms/mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
