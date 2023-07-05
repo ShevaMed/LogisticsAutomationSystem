@@ -243,7 +243,7 @@ void MainWindow::on_statusInNumberLineEdit_textChanged(const QString &arg1)
         ui->statusStatusChangeComboBox
                     ->setCurrentIndex(ui->statusStatusChangeComboBox->findText(status));
 
-        int progress = this->defineProgress(arg1);
+        int progress = this->defineProgress(ui->statusStatusChangeComboBox->currentText());
         ui->statusProgressBar->setValue(progress);
         ui->statusBar->showMessage("Відправлення №" + arg1 + " знайдено!");
     } else {
@@ -319,7 +319,7 @@ void MainWindow::on_actionLogout_triggered()
 
 void MainWindow::on_loginPushButton_clicked()
 {
-    QSqlTableModel *usersModel = DBManager::instance().getTypeModel();
+    QSqlTableModel *usersModel = DBManager::instance().getUsersModel();
     int usersCount = usersModel->rowCount();
 
     for (int i = 0; i < usersCount; ++i) {
@@ -338,11 +338,10 @@ void MainWindow::on_loginPushButton_clicked()
                 ui->actionLogout->setEnabled(true);
                 ui->actionShowDepartments->setEnabled(true);
                 return;
-            } else {
-                ui->statusBar->showMessage("Невірний пароль!");
-                ui->passwordLineEdit->clear();
-                return;
             }
+            ui->statusBar->showMessage("Невірний пароль!");
+            ui->passwordLineEdit->clear();
+            return;
         }
     }
     ui->statusBar->showMessage("Недійсний логін!");
