@@ -36,5 +36,10 @@ To download Qt, Compiler and IDE, you need to follow the link: https://www.qt.io
 - IDE: Qt Creator 8.0.2
 
 ## Screenshots
-<div style="text-align:center"><img src="[...](https://github.com/ShevaMed/LogisticsAutomationSystem/blob/main/screenshots/screen1.png)" /></div>
-
+![screenshot](https://github.com/ShevaMed/LogisticsAutomationSystem/blob/main/screenshots/screen1.png)
+![screenshot](https://github.com/ShevaMed/LogisticsAutomationSystem/blob/main/screenshots/screen2.png)
+![screenshot](https://github.com/ShevaMed/LogisticsAutomationSystem/blob/main/screenshots/screen3.png)
+![screenshot](https://github.com/ShevaMed/LogisticsAutomationSystem/blob/main/screenshots/screen4.png)
+![screenshot](https://github.com/ShevaMed/LogisticsAutomationSystem/blob/main/screenshots/screen5.png)
+![screenshot](https://github.com/ShevaMed/LogisticsAutomationSystem/blob/main/screenshots/screen6.png)
+![screenshot](https://github.com/ShevaMed/LogisticsAutomationSystem/blob/main/screenshots/screen7.png)
