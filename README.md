@@ -17,7 +17,7 @@ To set up the project, follow these steps:
 1. Clone the repository to your local machine.
 2. Install the necessary technologies and libraries specified in the project's [Dependencies](#dependencies).
 3. Build a project with Qt Creator using the `LogisticsAutomationSystem/LogisticsAutomationSystem.pro` file.
-4. Compile the project with the Desktop compiler MinGW 64bit.
+4. Compile the project with the Desktop MinGW 11.2.0 64-bit for C++.
 5. Now you can run the program using Qt Creator or `.exe` file.
 
 ## Dependencies
